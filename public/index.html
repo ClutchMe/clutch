@@ -1,0 +1,67 @@
+const express = require('express');
+const http = require('http');
+const socketIO = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+app.use(express.static('public'));
+
+io.on('connection', (socket) => {
+  console.log('🟢 A user connected:', socket.id);
+
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('🔴 User disconnected:', socket.id);
+  });
+});
+
+const PORT = 3000;
+server.listen(PORT, () => {
+  console.log(`🚀 Clutch server running on http://localhost:${PORT}`);
+});
+Press Ctrl + X, then Y, then Enter to save and exit.
+
+📁 Step 3: Add a Basic Frontend
+Make the public folder and an index.html:
+
+mkdir public
+nano public/index.html
+Paste this HTML:
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clutch Chat</title>
+</head>
+<body>
+  <h1>Welcome to Clutch</h1>
+  <ul id="messages"></ul>
+  <input id="m" autocomplete="off" /><button>Send</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.querySelector('button');
+    const input = document.querySelector('#m');
+    const messages = document.querySelector('#messages');
+
+    form.onclick = () => {
+      if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    };
+
+    socket.on('chat message', function(msg) {
+      const item = document.createElement('li');
+      item.textContent = msg;
+      messages.appendChild(item);
+    });
+  </script>
+</body>
+</html>
