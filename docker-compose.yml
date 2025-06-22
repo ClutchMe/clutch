@@ -1,13 +1,13 @@
-version: '3'
+version: '3.8'
 services:
   clutch-app:
     build: .
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
     depends_on:
       - mongo
+    volumes:
+      - .:/app
   mongo:
     image: mongo
     ports:
