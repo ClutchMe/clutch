@@ -1,13 +1,16 @@
 {
-  "name": "clutch-app",
+  "name": "clutch",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "mongoose": "^7.6.1"
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
   }
 }
