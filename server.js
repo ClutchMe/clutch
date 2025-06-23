@@ -1,13 +1,17 @@
-require('./db'); // connects to MongoDB
+require('dotenv').config();
+require('./db');
+
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
+const authRoutes = require('./auth');
 
 const app = express();
-const authRoutes = require('./auth');
 const server = http.createServer(app);
 const io = socketIO(server);
 
+app.use(express.json());
+app.use('/api', authRoutes);
 app.use(express.static('public'));
 
 io.on('connection', (socket) => {
@@ -22,7 +26,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`🚀 Clutch server running on http://localhost:${PORT}`);
 });

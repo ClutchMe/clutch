@@ -1,45 +1,42 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+const User = require('./models/User');
+
 const router = express.Router();
-
-// Replace with a secure key in production!
-const JWT_SECRET = 'super_secret_key';
-
-// User Schema
-const UserSchema = new mongoose.Schema({
-  username: { type: String, unique: true },
-  email: { type: String, unique: true },
-  password: String,
-});
-
-const User = mongoose.model('User', UserSchema);
 
 // Signup
 router.post('/signup', async (req, res) => {
-  const { username, email, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-
   try {
-    const user = await User.create({ username, email, password: hashed });
-    res.status(201).json({ message: 'User created', user: { username, email } });
+    const { username, password } = req.body;
+    const exists = await User.findOne({ username });
+    if (exists) return res.status(400).json({ error: 'User exists' });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ username, password: hashed });
+    await user.save();
+
+    res.json({ message: 'User created' });
   } catch (err) {
-    res.status(400).json({ error: 'User already exists or invalid input' });
+    res.status(500).json({ error: 'Signup failed' });
   }
 });
 
 // Login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) return res.status(400).json({ error: 'Invalid credentials' });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ error: 'Invalid email or password' });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ error: 'Invalid credentials' });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ error: 'Login failed' });
   }
-
-  const token = jwt.sign({ id: user._id }, JWT_SECRET);
-  res.json({ token, username: user.username });
 });
 
 module.exports = router;
