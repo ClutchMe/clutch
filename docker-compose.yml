@@ -1,5 +1,4 @@
-version: '3.8'
-
+version: '3'
 services:
   clutch-app:
     build: .
@@ -8,10 +7,12 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URL=mongodb://mongo:27017/clutch
+      - MONGO_URL=mongodb://mongo:27017/clutchdb
 
   mongo:
-    image: mongo:6
+    image: mongo
+    container_name: mongo
+    restart: always
     ports:
       - "27017:27017"
     volumes:

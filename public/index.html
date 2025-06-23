@@ -1,32 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Clutch Chat</title>
+  <meta charset="UTF-8">
+  <title>Clutch - Home</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 40px 60px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .btn {
+      padding: 15px 25px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      color: white;
+      text-decoration: none;
+    }
+
+    .btn.signup {
+      background-color: #4CAF50;
+    }
+
+    .btn.signup:hover {
+      background-color: #45a049;
+    }
+
+    .btn.login {
+      background-color: #2196F3;
+    }
+
+    .btn.login:hover {
+      background-color: #1e87dc;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Clutch</h1>
-  <ul id="messages"></ul>
-  <input id="m" autocomplete="off" /><button>Send</button>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const form = document.querySelector('button');
-    const input = document.querySelector('#m');
-    const messages = document.querySelector('#messages');
-
-    form.onclick = () => {
-      if (input.value) {
-        socket.emit('chat message', input.value);
-        input.value = '';
-      }
-    };
-
-    socket.on('chat message', function(msg) {
-      const item = document.createElement('li');
-      item.textContent = msg;
-      messages.appendChild(item);
-    });
-  </script>
+  <div class="container">
+    <h1>Welcome to Clutch</h1>
+    <div class="buttons">
+      <a href="signup.html" class="btn signup">Sign Up</a>
+      <a href="login.html" class="btn login">Login</a>
+    </div>
+  </div>
 </body>
 </html>
