@@ -1,63 +1,81 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign Up</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign Up - Clutch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
-      background-color: black;
-      color: white;
-      font-family: 'Courier New', monospace;
+      margin: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
     }
-    input, button {
-      margin: 5px;
-      padding: 8px;
-      width: 200px;
-      font-size: 16px;
-      background: #222;
-      color: white;
-      border: 1px solid white;
+
+    h1 {
+      margin-bottom: 40px;
+      text-align: center;
     }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+
+    input {
+      background: #111;
+      border: 2px solid #fff;
+      color: #0f0;
+      padding: 10px;
+      font-family: 'Press Start 2P', monospace;
+      margin-bottom: 20px;
+      font-size: 10px;
+    }
+
+    button {
+      background: none;
+      border: 2px solid white;
+      color: white;
+      padding: 10px;
+      font-family: 'Press Start 2P', monospace;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 10px;
+    }
+
     button:hover {
-      background: white;
+      background-color: white;
       color: black;
+    }
+
+    a {
+      color: #0ff;
+      font-size: 10px;
+      text-align: center;
+      margin-top: 20px;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
+
   <h1>Sign Up</h1>
-  <form id="signupForm">
-    <input type="text" name="username" placeholder="Username" required /><br>
-    <input type="email" name="email" placeholder="Email" required /><br>
-    <input type="tel" name="phone" placeholder="Phone Number" required /><br>
-    <input type="password" name="password" placeholder="Password" required /><br>
-    <button type="submit">Sign Up</button>
+  <form action="/api/signup" method="POST">
+    <input type="text" name="username" placeholder="USERNAME" required />
+    <input type="password" name="password" placeholder="PASSWORD" required />
+    <input type="email" name="email" placeholder="EMAIL" required />
+    <input type="tel" name="phone" placeholder="PHONE NUMBER" required />
+    <button type="submit">CREATE ACCOUNT</button>
   </form>
 
-  <script>
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        username: form.username.value,
-        email: form.email.value,
-        phone: form.phone.value,
-        password: form.password.value
-      };
+  <a href="/login.html">Already have an account? Log in</a>
 
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-      alert(result.message || result.error);
-    });
-  </script>
 </body>
 </html>
