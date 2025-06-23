@@ -2,78 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Clutch - Home</title>
+  <title>Clutch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
-    }
-
     body {
-      height: 100vh;
-      background: linear-gradient(135deg, #1f1c2c, #928dab);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background-color: black;
       color: white;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      padding: 30px;
     }
 
-    .container {
-      text-align: center;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 40px 60px;
-      border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    .cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: white;
+      animation: blink 0.7s steps(1) infinite;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
+    @keyframes blink {
+      50% { background-color: black; }
+    }
+
+    #terminal {
+      white-space: pre-line;
+      line-height: 2;
     }
 
     .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      margin-top: 40px;
     }
 
     .btn {
-      padding: 15px 25px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
+      background: black;
       color: white;
+      border: 2px solid white;
+      padding: 12px 20px;
+      font-size: 12px;
+      margin-right: 20px;
       text-decoration: none;
+      font-family: 'Press Start 2P', monospace;
+      cursor: pointer;
+      display: inline-block;
     }
 
-    .btn.signup {
-      background-color: #4CAF50;
-    }
-
-    .btn.signup:hover {
-      background-color: #45a049;
-    }
-
-    .btn.login {
-      background-color: #2196F3;
-    }
-
-    .btn.login:hover {
-      background-color: #1e87dc;
+    .btn:hover {
+      background-color: white;
+      color: black;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to Clutch</h1>
-    <div class="buttons">
-      <a href="signup.html" class="btn signup">Sign Up</a>
-      <a href="login.html" class="btn login">Login</a>
-    </div>
-  </div>
+  <div id="terminal"></div><span class="cursor" id="cursor"></span>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const cursor = document.getElementById('cursor');
+
+    const lines = [
+      'clutch',
+      'Welcome to Clutch'
+    ];
+
+    const buttonsHTML = `
+<div class="buttons">
+  <a href="signup.html" class="btn">SIGN UP</a>
+  <a href="login.html" class="btn">LOGIN</a>
+</div>`;
+
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    function typeLine() {
+      if (lineIndex < lines.length) {
+        if (charIndex < lines[lineIndex].length) {
+          terminal.innerHTML += lines[lineIndex][charIndex];
+          charIndex++;
+          setTimeout(typeLine, 100);
+        } else {
+          terminal.innerHTML += '\n';
+          charIndex = 0;
+          lineIndex++;
+          setTimeout(typeLine, 500);
+        }
+      } else {
+        setTimeout(() => {
+          cursor.remove();
+          terminal.innerHTML += buttonsHTML;
+        }, 700);
+      }
+    }
+
+    typeLine();
+  </script>
 </body>
 </html>
