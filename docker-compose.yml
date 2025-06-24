@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - mongo
+      - clutchdb
     environment:
       - MONGO_URL=mongodb://mongo:27017/clutchdb
 
