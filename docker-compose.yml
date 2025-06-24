@@ -1,25 +1,18 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  mongo:
-    image: mongo
-    container_name: clutch-mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
-  clutch-app:
+  app:
     build: .
     container_name: clutch-app
     ports:
       - "3000:3000"
     depends_on:
       - mongo
-    env_file:
-      - .env
-    volumes:
-      - .:/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/clutchdb
 
-volumes:
-  mongo-data:
+  mongo:
+    image: mongo
+    container_name: clutch-mongo
+    ports:
+      - "27017:27017"
