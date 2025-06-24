@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URI, {
+
+mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-module.exports = mongoose;
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB connected'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));

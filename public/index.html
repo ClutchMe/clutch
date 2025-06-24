@@ -1,1 +1,77 @@
-<!DOCTYPE html><html><head><title>Clutch</title></head><body><h1>Welcome to Clutch</h1><a href='/signup.html'>Sign Up</a></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Clutch</title>
+  <style>
+    body { font-family: sans-serif; background: #1e1e1e; color: white; }
+    #login, #chat { display: none; padding: 20px; }
+    #chat { display: flex; flex-direction: column; height: 90vh; }
+    #messages { flex: 1; overflow-y: auto; border: 1px solid #444; margin-bottom: 10px; padding: 10px; }
+    input[type="text"] { padding: 8px; }
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h2>Welcome to Clutch 🚀</h2>
+    <input id="username" type="text" placeholder="Enter your name" />
+    <button onclick="login()">Join Chat</button>
+  </div>
+
+  <div id="chat">
+    <h2>Clutch Lobby 💬</h2>
+    <div id="messages"></div>
+    <input id="message" type="text" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMessage()" />
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let name = '';
+
+    function login() {
+      const input = document.getElementById('username');
+      name = input.value.trim();
+      if (name) {
+        localStorage.setItem('name', name);
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('chat').style.display = 'block';
+        socket.emit('join', name);
+      }
+    }
+
+    function sendMessage() {
+      const msgInput = document.getElementById('message');
+      const message = msgInput.value.trim();
+      if (message) {
+        socket.emit('chat message', `${name}: ${message}`);
+        msgInput.value = '';
+      }
+    }
+
+    socket.on('chat message', msg => {
+      const div = document.createElement('div');
+      div.textContent = msg;
+      document.getElementById('messages').appendChild(div);
+    });
+
+    socket.on('user joined', user => {
+      const div = document.createElement('div');
+      div.textContent = `🚪 ${user} joined`;
+      div.style.color = 'gray';
+      document.getElementById('messages').appendChild(div);
+    });
+
+    window.onload = () => {
+      const stored = localStorage.getItem('name');
+      if (stored) {
+        name = stored;
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('chat').style.display = 'block';
+        socket.emit('join', name);
+      } else {
+        document.getElementById('login').style.display = 'block';
+      }
+    };
+  </script>
+</body>
+</html>

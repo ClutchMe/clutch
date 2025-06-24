@@ -1,25 +1,32 @@
-require('dotenv').config();
+require('./db'); // MongoDB connection
+
 const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
+const http = require('http');
+const socketIO = require('socket.io');
+const authRoutes = require('./auth'); // 👈 Auth routes
+
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-const authRoutes = require('./routes/auth');
+app.use(express.json()); // 👈 Needed to read JSON from POST
+app.use('/api', authRoutes); // 👈 Use /api/login and /api/signup
+app.use(express.static('public')); // 👈 Frontend files
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', authRoutes);
+// WebSocket handling
+io.on('connection', (socket) => {
+  console.log('🟢 A user connected:', socket.id);
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
-  console.log('✅ Connected to MongoDB');
-}).catch((err) => {
-  console.error('❌ MongoDB connection error:', err);
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('🔴 User disconnected:', socket.id);
+  });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = 3000;
+server.listen(PORT, () => {
   console.log(`🚀 Clutch server running on http://localhost:${PORT}`);
 });
